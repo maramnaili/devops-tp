@@ -1,27 +1,26 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE = "maramnaili/hello-devops"
-    }
     stages {
-        // Étape de construction de l'image Docker
+        stage('Checkout') {
+            steps {
+                // Cette étape permet de récupérer ton code source depuis le dépôt Git
+                git 'https://github.com/maramnaili/devops-tp.git'
+            }
+        }
+        // Autres étapes (build, tests, déploiement, etc.)
         stage('Build Docker') {
             steps {
                 sh 'docker build -t ${DOCKER_IMAGE} .'
             }
         }
-
-        // Étape de validation post-déploiement (test de validation avec curl)
         stage('Post-Deployment Validation') {
             steps {
                 script {
-                    // Smoke test: envoi une requête curl à l'application
+                    // Smoke test
                     sh 'curl http://localhost:5000 && echo "App is up!"'
                 }
             }
         }
-
-        // Étape de push de l'image Docker (simulée)
         stage('Push Docker') {
             steps {
                 sh 'echo "docker push ${DOCKER_IMAGE}"'
